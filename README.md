@@ -27,3 +27,14 @@
   - Построения и проверки **графа предпочтений**, чтобы исключить логические противоречия.
   - Проверки существования эквивалентных \( WE \) и улучшенных \( WI \) векторов без их генерации.
   - Сравнения альтернатив на основе пользовательских предпочтений.
+
+## Persons
+The main contributor of the project is Vladimir S. Lebedev, a student of SPbPU ICSC.
+
+The advisor and minor contributor is Vladimir A. Parkhomenko a seniour lecturer of SPbPU ICSC.
+
+## Warranty
+The contributors give no warranty for the using of the software.
+
+## License
+This program is open to use anywhere and is licensed under the MIT license.
