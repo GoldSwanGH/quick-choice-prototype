@@ -12,6 +12,7 @@ class DecisionModel:
         - alternatives_df: DataFrame с альтернативами и значениями критериев.
         - preferences_list: Список объектов Preference.
         """
+        self.pareto_front = None
         self.criteria = {criterion.name: criterion for criterion in criteria_list}
         self.alternatives = alternatives_df.copy()
         self.preferences = preferences_list
@@ -129,6 +130,9 @@ class DecisionModel:
         normalized_df = self.alternatives.copy()
         for criterion in self.criteria.values():
             if criterion.is_ordinal():
+                if len(criterion.valid_values) == 1:
+                    normalized_df[criterion.name] = 1.0
+                    continue
                 # Кодирование порядковых значений от 0 до n
                 value_to_number = {value: idx for idx, value in enumerate(criterion.valid_values)}
                 normalized_values = normalized_df[criterion.name].map(value_to_number)
@@ -138,6 +142,9 @@ class DecisionModel:
                 Alt_star = normalized_values.astype(float)
             else:
                 # Абсолютный критерий
+                if criterion.min_value == criterion.max_value:
+                    normalized_df[criterion.name] = 1.0
+                    continue
                 Alt_star = normalized_df[criterion.name].astype(float)
                 K_min = criterion.min_value
                 K_max = criterion.max_value
@@ -151,6 +158,7 @@ class DecisionModel:
             normalized_df[criterion.name] = normalized_values
 
         self.normalized_alternatives = normalized_df
+        return normalized_df
 
     def find_pareto_front(self):
         """
@@ -184,6 +192,7 @@ class DecisionModel:
 
         self.pareto_front = self.normalized_alternatives.loc[pareto_front]
         print(f"Найдено {len(self.pareto_front)} альтернатив в множестве Парето.\n")
+        return self.pareto_front
 
     def _dominates(self, row1, row2):
         """
@@ -464,8 +473,8 @@ class DecisionModel:
         Результат:
         - Обновляет self.pareto_t альтернативами, оставшимися после t-упорядочения.
         """
-        if not hasattr(self, 'pareto_front'):
-            raise ValueError("Множество Парето не найдено. Пожалуйста, выполните find_pareto_front перед t-упорядочиванием.")
+        if self.pareto_front is None:
+            self.find_pareto_front()
 
         # Assign importance relations
         self._get_equivalent_groups()
@@ -503,6 +512,7 @@ class DecisionModel:
         # Update alternatives after t-ordering
         self.pareto_t = pareto_alternatives.drop(index=alternatives_to_remove)
         print(f"Количество альтернатив после t-упорядочивания: {len(self.pareto_t)}\n")
+        return self.pareto_t
 
     def __str__(self):
         """
