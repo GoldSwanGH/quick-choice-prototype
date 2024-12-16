@@ -19,15 +19,29 @@ class TestExampleFromArticle(unittest.TestCase):
             min_value=0,
             max_value=1,
         )
+        self.criterion_f3 = Criterion(
+            name="f1",
+            absolute=True,
+            maximize=True,
+            min_value=0,
+            max_value=1,
+        )
+        self.criterion_f4 = Criterion(
+            name="f2",
+            absolute=True,
+            maximize=True,
+            min_value=0,
+            max_value=1,
+        )
 
-        self.criteria_list = [self.criterion_f1, self.criterion_f2]
+        self.criteria_list = [self.criterion_f1, self.criterion_f2, self.criterion_f3, self.criterion_f4]
 
         # Создание DataFrame с альтернативами: Z и W
         data = {
             "Alternative": ["Z", "W"],
             "f1": [1, 0.4],
             "f2": [0.5, 0.9],
-            "f3": [0.1, 0.1],  # Дополнительные критерии для полноты примера
+            "f3": [0.1, 0.1],
             "f4": [0.2, 0.2],
         }
         self.alternatives_df = pd.DataFrame(data)
